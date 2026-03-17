@@ -59,6 +59,12 @@ public class StaffController {
         return ResponseEntity.ok(staff);
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<?> getProducts(Authentication authentication) {
+        Staff staff = getAuthStaff(authentication);
+        return ResponseEntity.ok(productRepository.findByShop_Id(staff.getShop().getId()));
+    }
+
     // ---------------- Attendance ----------------
 
     @PostMapping("/attendance/check-in")
@@ -198,6 +204,12 @@ public class StaffController {
             Product product =
                     productRepository.findById(item.getProduct().getId())
                             .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            // 🔥 STOCK VALIDATION
+            if (product.getStockQuantity() < item.getQuantity()) {
+                throw new RuntimeException("Insufficient stock for product: " + product.getName() 
+                    + ". Available: " + product.getStockQuantity());
+            }
 
             item.setBill(savedBill);
             item.setProduct(product);

@@ -27,14 +27,14 @@ export class CustomerDashboardComponent implements OnInit {
   loadBills() {
     this.http.get<any[]>(`${this.apiUrl}/bills`).subscribe({
       next: (data) => this.bills = data,
-      error: () => console.log('Notice: Customer mapping constraints on backend')
+      error: (err) => console.error('Error loading bills:', err)
     });
   }
 
   loadOffers() {
     this.http.get<any[]>(`${this.apiUrl}/offers`).subscribe({
       next: (data) => this.offers = data,
-      error: () => console.log('Notice: Customer mapping constraints on backend')
+      error: (err) => console.error('Error loading offers:', err)
     });
   }
 

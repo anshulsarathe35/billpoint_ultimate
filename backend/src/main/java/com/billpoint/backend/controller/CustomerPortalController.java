@@ -1,8 +1,10 @@
 package com.billpoint.backend.controller;
 
-import com.billpoint.backend.model.Customer;
+import com.billpoint.backend.model.Bill;
+import com.billpoint.backend.model.User;
+import com.billpoint.backend.model.Offer;
 import com.billpoint.backend.repository.BillRepository;
-import com.billpoint.backend.repository.CustomerRepository;
+import com.billpoint.backend.repository.UserRepository;
 import com.billpoint.backend.repository.OfferRepository;
 import com.billpoint.backend.security.UserDetailsImpl;
 
@@ -27,27 +29,27 @@ public class CustomerPortalController {
     private OfferRepository offerRepository;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private UserRepository userRepository;
 
     @GetMapping("/bills")
     public ResponseEntity<?> getMyBills(Authentication authentication) {
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new RuntimeException("Error: User not found"));
 
-        List<Customer> customers = customerRepository.findByUser_Id(userId);
+        if (user.getPhone() == null) {
+            return ResponseEntity.ok(List.of());
+        }
 
-        return ResponseEntity.ok(customers);
+        List<Bill> bills = billRepository.findByCustomer_Phone(user.getPhone());
+        return ResponseEntity.ok(bills);
     }
 
     @GetMapping("/offers")
-    public ResponseEntity<?> getOffers(Authentication authentication) {
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Long userId = userDetails.getId();
-
-        List<Customer> customers = customerRepository.findByUser_Id(userId);
-
-        return ResponseEntity.ok(customers);
+    public ResponseEntity<?> getOffers() {
+        List<Offer> activeOffers = offerRepository.findAll().stream()
+                .filter(offer -> offer.getIsActive() != null && offer.getIsActive())
+                .toList();
+        return ResponseEntity.ok(activeOffers);
     }
 }

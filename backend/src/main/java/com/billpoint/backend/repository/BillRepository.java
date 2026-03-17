@@ -12,4 +12,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     List<Bill> findByShop_IdAndCreatedAtBetween(Long shopId, java.time.LocalDateTime start, java.time.LocalDateTime end);
 
+    List<Bill> findByCustomer_Phone(String phone);
+
 }

@@ -31,10 +31,10 @@ export class StaffDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAttendance();
-    // Assuming staff can access shop products if we update Backend or use a workaround:
-    this.http.get<any[]>(`${this.apiUrl}/shop-owner/products`).subscribe({
+    // Use dedicated staff endpoint for inventory access
+    this.http.get<any[]>(`${this.apiUrl}/staff/products`).subscribe({
       next: (data) => this.products = data,
-      error: () => console.log('Requires endpoint adjustment for staff product access.')
+      error: () => console.log('Error loading products for staff.')
     });
   }
 
@@ -62,7 +62,6 @@ export class StaffDashboardComponent implements OnInit {
   }
 
   markAttendance() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
     this.http.get<any>(`${this.apiUrl}/staff/profile`).subscribe({
       next: (staff) => {
         const payload = {
@@ -106,14 +105,13 @@ export class StaffDashboardComponent implements OnInit {
 
   // --- Billing ---
   addToCart(product: any) {
-    const item = this.cart.find(i => i.productId === product.id);
+    const item = this.cart.find(i => i.product.id === product.id);
     if (item) {
       item.quantity += 1;
       item.totalPrice = item.quantity * item.pricePerUnit;
     } else {
       this.cart.push({
-        productId: product.id,
-        name: product.name,
+        product: { id: product.id, name: product.name },
         quantity: 1,
         pricePerUnit: product.price,
         totalPrice: product.price

@@ -109,17 +109,13 @@
           </div>
 
           <div class="product-grid">
-            <!-- Mock visual if products aren't available due to API constraints -->
-            <div class="product-card">
-              <div class="p-name">Sample Item 1</div>
-              <div class="p-price">Rs. 500</div>
-              <button class="btn-sm btn-primary mt-2" (click)="addToCart({id:1, name:'Sample Item 1', price: 500})">Add</button>
+            <div class="product-card" *ngFor="let product of products">
+              <div class="p-name">{{product.name}}</div>
+              <div class="p-price">Rs. {{product.price}}</div>
+              <div class="p-stock small text-muted">Stock: {{product.stockQuantity}}</div>
+              <button class="btn-sm btn-primary mt-2" (click)="addToCart(product)">Add to Cart</button>
             </div>
-            <div class="product-card">
-              <div class="p-name">Sample Item 2</div>
-              <div class="p-price">Rs. 250</div>
-              <button class="btn-sm btn-primary mt-2" (click)="addToCart({id:2, name:'Sample Item 2', price: 250})">Add</button>
-            </div>
+            <div *ngIf="products.length === 0" class="empty-state">No products found for this shop.</div>
           </div>
         </div>
 
@@ -129,7 +125,7 @@
           <div class="cart-items">
             <div class="cart-item" *ngFor="let item of cart; let idx = index">
               <div class="item-info">
-                <span class="name">{{item.name}} x{{item.quantity}}</span>
+                <span class="name">{{item.product.name}} x{{item.quantity}}</span>
                 <span class="price">Rs. {{item.totalPrice}}</span>
               </div>
               <button class="btn-sm text-danger" (click)="removeFromCart(idx)">×</button>
