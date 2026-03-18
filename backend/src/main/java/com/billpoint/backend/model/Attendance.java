@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "attendance")
@@ -64,4 +65,10 @@ public class Attendance {
 
     public Double getWorkingHours() { return workingHours; }
     public void setWorkingHours(Double workingHours) { this.workingHours = workingHours; }
+
+    @Transient
+    private String attendanceCode;
+
+    public String getAttendanceCode() { return attendanceCode; }
+    public void setAttendanceCode(String attendanceCode) { this.attendanceCode = attendanceCode; }
 }

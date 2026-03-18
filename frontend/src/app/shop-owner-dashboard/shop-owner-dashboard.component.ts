@@ -19,6 +19,8 @@ export class ShopOwnerDashboardComponent implements OnInit {
   staffList: any[] = [];
   offers: any[] = [];
   revenue: string = '0.00';
+  shopName: string = '';
+  attendanceCode: string = '';
 
   // Forms
   newProduct: any = {};
@@ -30,10 +32,26 @@ export class ShopOwnerDashboardComponent implements OnInit {
   constructor(public authService: AuthService, private http: HttpClient) {}
 
   ngOnInit(): void {
+    this.loadShopProfile();
     this.loadProducts();
     this.loadStaff();
     this.loadOffers();
     this.loadRevenue();
+    this.loadAttendanceCode();
+  }
+
+  loadShopProfile() {
+    this.http.get<any>(`${this.apiUrl}/shop-owner/profile`).subscribe(data => this.shopName = data.name);
+  }
+
+  loadAttendanceCode() {
+    this.http.get<any>(`${this.apiUrl}/shop-owner/attendance-code`).subscribe(res => this.attendanceCode = res.message);
+  }
+
+  updateAttendanceCode() {
+    this.http.post(`${this.apiUrl}/shop-owner/attendance-code`, { message: this.attendanceCode }).subscribe(() => {
+      alert('Attendance code updated');
+    });
   }
 
   // --- Inventory ---

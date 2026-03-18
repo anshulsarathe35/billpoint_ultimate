@@ -18,7 +18,7 @@ public class BackendApplication {
 	}
 
 	@Bean
-	public CommandLineRunner seedDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public static CommandLineRunner seedDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
 			userRepository.findByUsername("admin").ifPresentOrElse(admin -> {
 				admin.setPassword(passwordEncoder.encode("admin123"));

@@ -31,7 +31,10 @@
   <!-- Main Content -->
   <main class="main-content">
     <header class="top-header">
-      <h2>Owner Control Panel</h2>
+      <div class="header-info">
+        <h2>Owner Control Panel</h2>
+        <div class="shop-badge" *ngIf="shopName">Shop: <strong>{{shopName}}</strong></div>
+      </div>
       <div class="quick-stats">Revenue: <strong class="text-success">Rs. {{revenue}}</strong></div>
     </header>
 
@@ -86,6 +89,15 @@
     <div class="content-body" *ngIf="activeTab === 'staff'">
       <div class="header-action-row">
         <h3>Staff Management</h3>
+      </div>
+
+      <div class="card-form mb-4">
+        <h4>Daily Attendance Security Code</h4>
+        <div class="form-grid">
+          <input type="text" [(ngModel)]="attendanceCode" placeholder="Enter daily code (e.g. SHOP123)">
+          <button class="btn-primary" (click)="updateAttendanceCode()">Set Today's Code</button>
+        </div>
+        <p class="text-muted small mt-2">Staff must enter this code to mark their attendance for today.</p>
       </div>
 
       <div class="card-form mb-4">

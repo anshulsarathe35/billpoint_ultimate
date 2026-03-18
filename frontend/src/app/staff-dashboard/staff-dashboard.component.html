@@ -48,6 +48,10 @@
             <label>Working Hours</label>
             <input type="number" [(ngModel)]="attendance.workingHours" placeholder="Enter hours">
           </div>
+          <div class="input-group">
+            <label>Security Code</label>
+            <input type="text" [(ngModel)]="attendance.attendanceCode" placeholder="Enter daily code">
+          </div>
           <button class="btn-primary mt-4" (click)="markAttendance()">Submit Attendance</button>
         </div>
       </div>
@@ -116,6 +120,35 @@
               <button class="btn-sm btn-primary mt-2" (click)="addToCart(product)">Add to Cart</button>
             </div>
             <div *ngIf="products.length === 0" class="empty-state">No products found for this shop.</div>
+          </div>
+
+          <!-- Recent Bills Section -->
+          <div class="recent-bills-section mt-5" *ngIf="recentBills.length > 0">
+            <h3>Today's Recent Bills</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Bill ID</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let bill of recentBills">
+                    <td>#{{bill.id}}</td>
+                    <td>{{bill.customer?.name || 'Walk-in'}}</td>
+                    <td>Rs. {{bill.finalAmount}}</td>
+                    <td>
+                      <button class="btn-sm btn-outline-primary" (click)="downloadInvoice(bill.id)">
+                        Download Invoice
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

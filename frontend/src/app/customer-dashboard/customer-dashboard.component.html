@@ -52,7 +52,12 @@
               <td>{{bill.createdAt | date:'mediumDate'}}</td>
               <td>Rs. {{bill.finalAmount}}</td>
               <td>{{bill.paymentMode}}</td>
-              <td><span class="status-badge approved">Paid</span></td>
+              <td>
+                <span class="status-badge approved">Paid</span>
+                <button class="btn-sm btn-outline-primary ms-2" (click)="downloadInvoice(bill.id)">
+                  Invoice
+                </button>
+              </td>
             </tr>
             <tr *ngIf="bills.length === 0">
               <td colspan="5" class="empty-state">No purchases found. Visit our shops to see your history here!</td>

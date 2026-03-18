@@ -38,6 +38,19 @@ export class CustomerDashboardComponent implements OnInit {
     });
   }
 
+  downloadInvoice(billId: number) {
+    this.http.get(`${this.apiUrl}/bills/${billId}/invoice`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice_${billId}.pdf`;
+        a.click();
+      },
+      error: (err) => alert('Error downloading invoice: ' + err.error?.message)
+    });
+  }
+
   logout() {
     this.authService.logout();
   }

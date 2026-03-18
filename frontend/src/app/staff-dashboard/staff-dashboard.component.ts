@@ -31,6 +31,7 @@ export class StaffDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAttendance();
+    this.loadRecentBills();
     // Use dedicated staff endpoint for inventory access
     this.http.get<any[]>(`${this.apiUrl}/staff/products`).subscribe({
       next: (data) => this.products = data,
@@ -41,9 +42,11 @@ export class StaffDashboardComponent implements OnInit {
   // --- Attendance ---
   attendance = {
     date: new Date().toISOString().split('T')[0],
-    workingHours: 0
+    workingHours: 0,
+    attendanceCode: ''
   };
   attendanceHistory: any[] = [];
+  recentBills: any[] = [];
 
   loadAttendance() {
     const userRole = localStorage.getItem('userRole');
@@ -67,16 +70,31 @@ export class StaffDashboardComponent implements OnInit {
         const payload = {
           staff: { id: staff.id },
           date: this.attendance.date,
-          workingHours: this.attendance.workingHours
+          workingHours: this.attendance.workingHours,
+          attendanceCode: this.attendance.attendanceCode
         };
         this.http.post(`${this.apiUrl}/attendance/mark`, payload).subscribe({
           next: (res: any) => {
             alert(res.message);
+            this.attendance.attendanceCode = '';
             this.loadAttendance();
           },
           error: (err) => alert(err.error?.message || 'Error marking attendance')
         });
       }
+    });
+  }
+
+  downloadInvoice(billId: number) {
+    this.http.get(`${this.apiUrl}/staff/bills/${billId}/invoice`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice_${billId}.pdf`;
+        a.click();
+      },
+      error: (err) => alert('Error downloading invoice: ' + err.error?.message)
     });
   }
 
@@ -157,8 +175,16 @@ export class StaffDashboardComponent implements OnInit {
         this.selectedCustomer = null;
         this.customerPhoneSearch = '';
         this.discount = 0;
+        this.loadRecentBills();
       },
       error: (err) => alert('Error creating bill: ' + err.error?.message)
+    });
+  }
+
+  loadRecentBills() {
+    this.http.get<any[]>(`${this.apiUrl}/reports/sales?startDate=${new Date().toISOString().split('T')[0]}&endDate=${new Date().toISOString().split('T')[0]}`).subscribe({
+      next: (data) => this.recentBills = data,
+      error: () => console.error('Could not load recent bills')
     });
   }
 

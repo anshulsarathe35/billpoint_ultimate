@@ -39,6 +39,7 @@ com\billpoint\backend\model\Bill.class
 com\billpoint\backend\security\WebSecurityConfig.class
 com\billpoint\backend\dto\ApprovalRequest.class
 com\billpoint\backend\repository\ProductRepository.class
+com\billpoint\backend\service\InvoiceService.class
 com\billpoint\backend\model\Staff.class
 com\billpoint\backend\repository\CustomerRepository.class
 com\billpoint\backend\model\Attendance.class

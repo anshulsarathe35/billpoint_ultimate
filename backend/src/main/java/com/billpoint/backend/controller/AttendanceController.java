@@ -40,6 +40,25 @@ public class AttendanceController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Attendance already marked for this date"));
         }
 
+        // Validate attendance code
+        String shopCode = staff.getShop().getAttendanceCode();
+        String providedCode = attendance.getAttendanceCode();
+        
+        // Trim for safety
+        shopCode = (shopCode != null) ? shopCode.trim() : null;
+        providedCode = (providedCode != null) ? providedCode.trim() : null;
+
+        System.out.println("DEBUG: Attendance Code Validation");
+        System.out.println("DEBUG: Shop ID: " + staff.getShop().getId());
+        System.out.println("DEBUG: Expected Code: '" + shopCode + "'");
+        System.out.println("DEBUG: Provided Code: '" + providedCode + "'");
+
+        if (shopCode != null && !shopCode.equalsIgnoreCase(providedCode)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid attendance code"));
+        } else if (shopCode == null && providedCode != null && !providedCode.isEmpty()) {
+             return ResponseEntity.badRequest().body(new MessageResponse("Error: Shop has not set an attendance code, but one was provided."));
+        }
+
         attendance.setStaff(staff);
         attendance.setShop(staff.getShop());
         attendance.setStatus("PRESENT");

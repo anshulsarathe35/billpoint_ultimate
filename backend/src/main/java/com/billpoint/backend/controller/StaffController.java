@@ -5,6 +5,7 @@ import com.billpoint.backend.dto.MessageResponse;
 import com.billpoint.backend.model.*;
 import com.billpoint.backend.repository.*;
 import com.billpoint.backend.security.UserDetailsImpl;
+import com.billpoint.backend.service.InvoiceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,9 @@ public class StaffController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private InvoiceService invoiceService;
 
     private Staff getAuthStaff(Authentication authentication) {
 
@@ -225,5 +229,18 @@ public class StaffController {
         return ResponseEntity.ok(
                 new MessageResponse(
                         "Bill created successfully. Bill ID: " + savedBill.getId()));
+    }
+
+    @GetMapping("/bills/{id}/invoice")
+    public ResponseEntity<byte[]> getInvoice(@PathVariable Long id) {
+        Bill bill = billRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+        byte[] pdf = invoiceService.generateInvoicePdf(bill);
+
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
+                .body(pdf);
     }
 }

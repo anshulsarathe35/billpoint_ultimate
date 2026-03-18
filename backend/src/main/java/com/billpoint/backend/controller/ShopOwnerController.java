@@ -48,6 +48,31 @@ public class ShopOwnerController {
                 .orElseThrow(() -> new RuntimeException("Error: Shop not found for this owner"));
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<Shop> getShopProfile(Authentication authentication) {
+        Shop shop = getAuthShop(authentication);
+        return ResponseEntity.ok(shop);
+    }
+
+    @GetMapping("/attendance-code")
+    public ResponseEntity<MessageResponse> getAttendanceCode(Authentication authentication) {
+        Shop shop = getAuthShop(authentication);
+        return ResponseEntity.ok(new MessageResponse(shop.getAttendanceCode()));
+    }
+
+    @PostMapping("/attendance-code")
+    public ResponseEntity<MessageResponse> setAttendanceCode(@RequestBody MessageResponse codeRequest, Authentication authentication) {
+        Shop shop = getAuthShop(authentication);
+        System.out.println("DEBUG: Setting Attendance Code");
+        System.out.println("DEBUG: Shop ID: " + shop.getId());
+        String newCode = (codeRequest.getMessage() != null) ? codeRequest.getMessage().trim() : null;
+        System.out.println("DEBUG: New Code: " + newCode);
+        
+        shop.setAttendanceCode(newCode);
+        shopRepository.save(shop);
+        return ResponseEntity.ok(new MessageResponse("Attendance code updated successfully"));
+    }
+
     // ---------------- Inventory ----------------
 
     @GetMapping("/products")

@@ -43,6 +43,9 @@ public class Shop {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "attendance_code")
+    private String attendanceCode;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -72,4 +75,7 @@ public class Shop {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getAttendanceCode() { return attendanceCode; }
+    public void setAttendanceCode(String attendanceCode) { this.attendanceCode = attendanceCode; }
 }

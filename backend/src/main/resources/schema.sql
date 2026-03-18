@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS shops (
     phone VARCHAR(20),
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    attendance_code VARCHAR(100),
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS attendance (
     check_in TIME,
     check_out TIME,
     status ENUM('PRESENT', 'ABSENT', 'HALF_DAY', 'LEAVE') DEFAULT 'PRESENT',
+    working_hours DOUBLE DEFAULT 0.0,
     FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE,
     FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE
 );
